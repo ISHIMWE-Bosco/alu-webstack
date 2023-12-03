@@ -1,0 +1,29 @@
+cript to display information about subdomains
+
+display_subdomain_info() {
+    domain=$1
+    subdomain=$2
+    
+    if [ -z "$subdomain" ]; then
+        subdomains=("www" "lb-01" "web-01" "web-02")
+    else
+        subdomains=("$subdomain")
+    fi
+    
+    for sub in "${subdomains[@]}"; do
+        record=$(dig $sub.$domain | awk '/ANSWER SECTION/ {getline; print}')
+        record_type=$(echo "$record" | awk '{print $4}')
+        destination=$(echo "$record" | awk '{print $5}')
+        echo "The subdomain $sub is a $record_type record and points to $destination"
+    done
+}
+
+# Check arguments
+if [ "$#" -eq 1 ]; then
+    display_subdomain_info "$1"
+elif [ "$#" -eq 2 ]; then
+    display_subdomain_info "$1" "$2"
+else
+    echo "Usage: $0 <domain> [subdomain]"
+    exit 1
+fi
