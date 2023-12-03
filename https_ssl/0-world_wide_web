@@ -1,4 +1,5 @@
-cript to display information about subdomains
+#!/usr/bin/env bash
+#script to display information about subdomains
 
 display_subdomain_info() {
     domain=$1
